@@ -192,4 +192,4 @@ This is a modern TypeScript/Node.js application with a multi-agent AI architectu
 
 ## 📄 License
 
-MIT License - feel free to use this for your AI learning platform!# synapsev2
+MIT License - feel free to use this for your AI learning platform!

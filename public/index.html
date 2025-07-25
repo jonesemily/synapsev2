@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synapse AI Learning Platform - Test Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .test-header {
+            background: #f9fafb;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .test-header h3 {
+            color: #374151;
+            margin-bottom: 5px;
+        }
+        
+        .test-header p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .test-body {
+            padding: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(91, 33, 182, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .result.success {
+            background: #d1fae5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+        
+        .result.error {
+            background: #fecaca;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+        
+        .result.loading {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            color: #1e40af;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.online {
+            background: #10b981;
+        }
+        
+        .status-indicator.offline {
+            background: #ef4444;
+        }
+        
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .agent-card {
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #f9fafb;
+        }
+        
+        .agent-card h4 {
+            color: #5b21b6;
+            margin-bottom: 8px;
+        }
+        
+        .agent-card p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Synapse AI Learning Platform</h1>
+            <p>Multi-Agent AI Coaching System - Test Interface</p>
+        </div>
+        
+        <div class="content">
+            <!-- System Status -->
+            <div class="test-section">
+                <div class="test-header">
+                    <h3><span class="status-indicator" id="statusIndicator"></span>System Status</h3>
+                    <p>Check if the platform is running and ready</p>
+                </div>
+                <div class="test-body">
+                    <button class="btn" onclick="checkHealth()">Check System Health</button>
+                    <button class="btn" onclick="checkAgents()">Check Agents</button>
+                    <div id="healthResult" class="result" style="display: none;"></div>
+                </div>
+            </div>
+            
+            <!-- User Authentication -->
+            <div class="test-section">
+                <div class="test-header">
+                    <h3>👤 User Authentication</h3>
+                    <p>Test user registration and login</p>
+                </div>
+                <div class="test-body">
+                    <div class="input-group">
+                        <label>Email:</label>
+                        <input type="email" id="userEmail" value="test@synapse.ai" placeholder="Enter email">
+                    </div>
+                    <div class="input-group">
+                        <label>Password:</label>
+                        <input type="password" id="userPassword" value="password123" placeholder="Enter password">
+                    </div>
+                    <div class="input-group">
+                        <label>Name:</label>
+                        <input type="text" id="userName" value="Test User" placeholder="Enter your name">
+                    </div>
+                    <button class="btn" onclick="registerUser()">Register User</button>
+                    <button class="btn" onclick="loginUser()">Login User</button>
+                    <div id="authResult" class="result" style="display: none;"></div>
+                </div>
+            </div>
+            
+            <!-- AI Agents Testing -->
+            <div class="test-section">
+                <div class="test-header">
+                    <h3>🤖 AI Agents Testing</h3>
+                    <p>Test the multi-agent system capabilities</p>
+                </div>
+                <div class="test-body">
+                    <div class="input-group">
+                        <label>Newsletter Content:</label>
+                        <textarea id="newsletterContent" placeholder="Paste newsletter or article content here...">OpenAI has released GPT-4 Turbo with improved reasoning capabilities and multimodal inputs. The new model offers 40% better performance while reducing costs by 60%. This breakthrough enables businesses to integrate AI more effectively into their workflows, with applications in customer service, content generation, and decision support systems.</textarea>
+                    </div>
+                    <button class="btn" onclick="processNewsletter()">📄 Process Newsletter</button>
+                    <button class="btn" onclick="generateLearningPath()">🎯 Generate Learning Path</button>
+                    <button class="btn" onclick="createPracticeScenario()">💼 Create Practice Scenario</button>
+                    <button class="btn" onclick="conductResearch()">🔍 Conduct Research</button>
+                    <div id="agentResult" class="result" style="display: none;"></div>
+                </div>
+            </div>
+            
+            <!-- Chat Interface -->
+            <div class="test-section">
+                <div class="test-header">
+                    <h3>💬 AI Chat</h3>
+                    <p>Chat with the AI agents</p>
+                </div>
+                <div class="test-body">
+                    <div class="input-group">
+                        <label>Message:</label>
+                        <input type="text" id="chatMessage" value="Explain machine learning in simple terms" placeholder="Ask the AI agents anything...">
+                    </div>
+                    <button class="btn" onclick="sendChat()">Send Message</button>
+                    <div id="chatResult" class="result" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let authToken = localStorage.getItem('authToken');
+        
+        // Check system health on page load
+        window.onload = function() {
+            checkHealth();
+        };
+        
+        function showResult(elementId, content, type = 'success') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            element.textContent = content;
+        }
+        
+        function showLoading(elementId) {
+            showResult(elementId, '⏳ Loading...', 'loading');
+        }
+        
+        async function checkHealth() {
+            showLoading('healthResult');
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('statusIndicator').className = 'status-indicator online';
+                    showResult('healthResult', `✅ System Online\n\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    throw new Error('Health check failed');
+                }
+            } catch (error) {
+                document.getElementById('statusIndicator').className = 'status-indicator offline';
+                showResult('healthResult', `❌ System Offline\n\nError: ${error.message}`, 'error');
+            }
+        }
+        
+        async function checkAgents() {
+            showLoading('healthResult');
+            try {
+                const response = await fetch('/api/agents/capabilities');
+                const data = await response.json();
+                
+                if (data.success) {
+                    let agentInfo = '🤖 Available Agents:\n\n';
+                    Object.entries(data.data).forEach(([key, agent]) => {
+                        agentInfo += `${key}:\n${agent.description}\n\n`;
+                    });
+                    showResult('healthResult', agentInfo, 'success');
+                } else {
+                    throw new Error('Failed to get agent info');
+                }
+            } catch (error) {
+                showResult('healthResult', `❌ Failed to get agent info\n\nError: ${error.message}`, 'error');
+            }
+        }
+        
+        async function registerUser() {
+            showLoading('authResult');
+            try {
+                const userData = {
+                    email: document.getElementById('userEmail').value,
+                    password: document.getElementById('userPassword').value,
+                    firstName: document.getElementById('userName').value.split(' ')[0] || 'Test',
+                    lastName: document.getElementById('userName').value.split(' ')[1] || 'User',
+                    role: 'PM',
+                    experience: 'Intermediate'
+                };
+                
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.data.token;
+                    localStorage.setItem('authToken', authToken);
+                    showResult('authResult', `✅ User Registered Successfully!\n\nToken: ${authToken.substring(0, 20)}...\nUser: ${data.data.user.firstName} ${data.data.user.lastName}`, 'success');
+                } else {
+                    throw new Error(data.error || 'Registration failed');
+                }
+            } catch (error) {
+                showResult('authResult', `❌ Registration Failed\n\nError: ${error.message}`, 'error');
+            }
+        }
+        
+        async function loginUser() {
+            showLoading('authResult');
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: document.getElementById('userEmail').value,
+                        password: document.getElementById('userPassword').value
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.data.token;
+                    localStorage.setItem('authToken', authToken);
+                    showResult('authResult', `✅ Login Successful!\n\nUser: ${data.data.user.firstName} ${data.data.user.lastName}\nRole: ${data.data.user.role}`, 'success');
+                } else {
+                    throw new Error(data.error || 'Login failed');
+                }
+            } catch (error) {
+                showResult('authResult', `❌ Login Failed\n\nError: ${error.message}`, 'error');
+            }
+        }
+        
+        async function processNewsletter() {
+            if (!authToken) {
+                showResult('agentResult', '❌ Please register/login first', 'error');
+                return;
+            }
+            
+            showLoading('agentResult');
+            try {
+                const response = await fetch('/api/agents/process-newsletter', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        content: document.getElementById('newsletterContent').value,
+                        source: 'Web Test Interface'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    let result = '✅ Newsletter Processed Successfully!\n\n';
+                    if (data.data && data.data.length > 0) {
+                        result += `Extracted ${data.data.length} topics:\n\n`;
+                        data.data.forEach((topic, index) => {
+                            result += `${index + 1}. ${topic.title} (${topic.category})\n`;
+                            result += `   ${topic.definition}\n\n`;
+                        });
+                    }
+                    showResult('agentResult', result, 'success');
+                } else {
+                    throw new Error(data.error || 'Processing failed');
+                }
+            } catch (error) {
+                showResult('agentResult', `❌ Newsletter Processing Failed\n\nError: ${error.message}`, 'error');
+            }
+        }
+        
+        async function generateLearningPath() {
+            if (!authToken) {
+                showResult('agentResult', '❌ Please register/login first', 'error');
+                return;
+            }
+            
+            showLoading('agentResult');
+            try {
+                const response = await fetch('/api/agents/generate-learning-path', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        targetRole: 'Senior Product Manager',
+                        timeframe: 30
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('agentResult', `✅ Learning Path Generated!\n\n${JSON.stringify(data.data, null, 2)}`, 'success');
+                } else {
+                    throw new Error(data.error || 'Learning path generation failed');
+                }
+            } catch (error) {
+                showResult('agentResult', `❌ Learning Path Generation Failed\n\nError: ${error.message}`, 'error');
+            }
+        }
+        
+        async function createPracticeScenario() {
+            if (!authToken) {
+                showResult('agentResult', '❌ Please register/login first', 'error');
+                return;
+            }
+            
+            showLoading('agentResult');
+            showResult('agentResult', '⚠️ Practice scenarios require topic IDs from processed content. Process a newsletter first!', 'error');
+        }
+        
+        async function conductResearch() {
+            if (!authToken) {
+                showResult('agentResult', '❌ Please register/login first', 'error');
+                return;
+            }
+            
+            showLoading('agentResult');
+            try {
+                const response = await fetch('/api/agents/conduct-research', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        query: 'AI adoption trends in product management',
+                        topics: ['AI_FUNDAMENTALS', 'BUSINESS_AI'],
+                        depth: 'detailed'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('agentResult', `✅ Research Completed!\n\n${JSON.stringify(data.data, null, 2)}`, 'success');
+                } else {
+                    throw new Error(data.error || 'Research failed');
+                }
+            } catch (error) {
+                showResult('agentResult', `❌ Research Failed\n\nError: ${error.message}`, 'error');
+            }
+        }
+        
+        async function sendChat() {
+            if (!authToken) {
+                showResult('chatResult', '❌ Please register/login first', 'error');
+                return;
+            }
+            
+            showLoading('chatResult');
+            try {
+                const response = await fetch('/api/agents/chat', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        message: document.getElementById('chatMessage').value
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('chatResult', `✅ AI Response:\n\n${data.data.response}\n\nAgent: ${data.data.agentType}`, 'success');
+                } else {
+                    throw new Error(data.error || 'Chat failed');
+                }
+            } catch (error) {
+                showResult('chatResult', `❌ Chat Failed\n\nError: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
